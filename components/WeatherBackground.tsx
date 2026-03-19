@@ -15,24 +15,24 @@ export function WeatherBackground({ type }: WeatherBackgroundProps) {
   const getGradient = () => {
     switch (type) {
       case "sunny":
-        return "from-sky-400 via-blue-300 to-cyan-200"
+        return "from-sky-400 via-orange-300 to-yellow-200"
       case "cloudy":
-        return "from-slate-500 via-gray-600 to-slate-700"
+        return "from-slate-600 via-gray-700 to-slate-800"
       case "rainy":
-        return "from-slate-700 via-slate-800 to-gray-900"
+        return "from-slate-700 via-blue-900 to-slate-900"
       case "stormy":
-        return "from-gray-900 via-slate-900 to-black"
+        return "from-slate-900 via-purple-950 to-black"
       case "snowy":
-        return "from-slate-200 via-blue-100 to-cyan-50"
+        return "from-slate-200 via-cyan-100 to-blue-50"
       case "clear":
       default:
-        return "from-indigo-900 via-blue-800 to-purple-900"
+        return "from-indigo-900 via-purple-900 to-slate-900"
     }
   }
 
   return (
     <>
-      {/* Animated Gradient Background */}
+      {/* Main Gradient */}
       <motion.div
         key={type}
         initial={{ opacity: 0 }}
@@ -42,10 +42,10 @@ export function WeatherBackground({ type }: WeatherBackgroundProps) {
         className={`fixed inset-0 bg-gradient-to-br ${getGradient()}`}
       />
 
-      {/* Atmospheric overlay with radial gradient */}
-      <div className="fixed inset-0 bg-gradient-radial from-transparent via-black/5 to-black/20 pointer-events-none" />
+      {/* Atmospheric depth overlay */}
+      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_transparent_0%,_rgba(0,0,0,0.2)_100%)] pointer-events-none" />
 
-      {/* Subtle animated grain texture */}
+      {/* Animated grain */}
       <motion.div 
         animate={{ 
           backgroundPosition: ["0% 0%", "100% 100%"],
@@ -55,14 +55,14 @@ export function WeatherBackground({ type }: WeatherBackgroundProps) {
           repeat: Infinity,
           repeatType: "reverse",
         }}
-        className="fixed inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none"
+        className="fixed inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='3' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' /%3E%3C/svg%3E")`,
-          backgroundSize: "200px 200px",
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.5' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' /%3E%3C/svg%3E")`,
+          backgroundSize: "180px 180px",
         }}
       />
 
-      {/* Weather-Specific Animations */}
+      {/* Weather Animations */}
       {type === "sunny" && <SunRaysAnimation />}
       {type === "cloudy" && <CloudsAnimation density="medium" />}
       {type === "rainy" && (
@@ -81,8 +81,8 @@ export function WeatherBackground({ type }: WeatherBackgroundProps) {
       {type === "snowy" && <SnowAnimation />}
       {type === "clear" && <CloudsAnimation density="light" />}
 
-      {/* Vignette effect */}
-      <div className="fixed inset-0 shadow-[inset_0_0_200px_rgba(0,0,0,0.3)] pointer-events-none" />
+      {/* Vignette */}
+      <div className="fixed inset-0 shadow-[inset_0_0_150px_rgba(0,0,0,0.4)] pointer-events-none" />
     </>
   )
 }
