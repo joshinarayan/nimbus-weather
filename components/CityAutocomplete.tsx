@@ -22,7 +22,7 @@ export function CityAutocomplete({ onCitySelect, value, onChange }: CityAutocomp
   const [results, setResults] = useState<CityResult[]>([])
   const [showResults, setShowResults] = useState(false)
   const [loading, setLoading] = useState(false)
-  const debounceTimer = useRef<NodeJS.Timeout>()
+  const debounceTimer = useRef<NodeJS.Timeout | null>(null)
   const wrapperRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
