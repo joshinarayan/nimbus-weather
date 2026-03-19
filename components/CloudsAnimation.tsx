@@ -1,6 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
+import { useMemo } from "react"
 
 interface CloudsAnimationProps {
   density?: "light" | "medium" | "heavy"
@@ -9,34 +10,42 @@ interface CloudsAnimationProps {
 export function CloudsAnimation({ density = "medium" }: CloudsAnimationProps) {
   const cloudCount = density === "light" ? 3 : density === "medium" ? 5 : 8
 
+  // Generate cloud properties once on client side
+  const clouds = useMemo(() => 
+    Array.from({ length: cloudCount }).map((_, i) => ({
+      id: i,
+      width: 150 + (i * 17) % 100,
+      height: 60 + (i * 13) % 40,
+      topPosition: `${(i * 23) % 50}%`,
+      duration: 30 + (i * 7) % 20,
+      delay: i * 3,
+    }))
+  , [cloudCount])
+
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-      {Array.from({ length: cloudCount }).map((_, i) => (
+      {clouds.map((cloud) => (
         <motion.div
-          key={i}
+          key={cloud.id}
           initial={{ x: -200, opacity: 0 }}
           animate={{
             x: ["0%", "110%"],
-            y: [
-              `${Math.random() * 60}%`,
-              `${Math.random() * 60}%`,
-            ],
             opacity: [0, 0.6, 0.6, 0],
           }}
           transition={{
-            duration: 30 + Math.random() * 20,
+            duration: cloud.duration,
             repeat: Infinity,
-            delay: i * 3,
+            delay: cloud.delay,
             ease: "linear",
           }}
           className="absolute"
           style={{
-            top: `${Math.random() * 50}%`,
+            top: cloud.topPosition,
           }}
         >
           <svg
-            width={150 + Math.random() * 100}
-            height={60 + Math.random() * 40}
+            width={cloud.width}
+            height={cloud.height}
             viewBox="0 0 200 100"
             fill="none"
           >

@@ -1,8 +1,21 @@
 "use client"
 
 import { motion } from "framer-motion"
+import { useMemo } from "react"
 
 export function SunRaysAnimation() {
+  // Generate particle positions once
+  const particles = useMemo(() => 
+    Array.from({ length: 20 }).map((_, i) => ({
+      id: i,
+      initialX: (i * 77) % window.innerWidth,
+      initialY: (i * 53) % window.innerHeight,
+      targetX: ((i * 89) % window.innerWidth),
+      targetY: ((i * 61) % window.innerHeight),
+      duration: 5 + (i * 7) % 10,
+    }))
+  , [])
+
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
       {/* Sun Circle */}
@@ -42,26 +55,20 @@ export function SunRaysAnimation() {
       ))}
 
       {/* Floating Light Particles */}
-      {Array.from({ length: 20 }).map((_, i) => (
+      {particles.map((particle) => (
         <motion.div
-          key={`particle-${i}`}
+          key={particle.id}
           initial={{
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
+            x: particle.initialX,
+            y: particle.initialY,
           }}
           animate={{
-            y: [
-              Math.random() * window.innerHeight,
-              Math.random() * window.innerHeight,
-            ],
-            x: [
-              Math.random() * window.innerWidth,
-              Math.random() * window.innerWidth,
-            ],
+            y: [particle.initialY, particle.targetY],
+            x: [particle.initialX, particle.targetX],
             opacity: [0, 1, 0],
           }}
           transition={{
-            duration: Math.random() * 10 + 5,
+            duration: particle.duration,
             repeat: Infinity,
             ease: "easeInOut",
           }}
