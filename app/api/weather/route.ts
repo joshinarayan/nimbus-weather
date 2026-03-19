@@ -129,13 +129,15 @@ export async function GET(request: NextRequest) {
       visibility: Math.round(weatherData.visibility / 1000), // meters to km
       uvIndex: 5, // Note: UV index requires separate API call or upgrade
       sunrise: new Date(weatherData.sys.sunrise * 1000).toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-      }),
-      sunset: new Date(weatherData.sys.sunset * 1000).toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-      }),
+  hour: '2-digit', 
+  minute: '2-digit',
+  hour12: true
+}),
+sunset: new Date(weatherData.sys.sunset * 1000).toLocaleTimeString('en-US', { 
+  hour: '2-digit', 
+  minute: '2-digit',
+  hour12: true
+}),
       forecast: dailyForecasts,
     }
 

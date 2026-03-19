@@ -7,6 +7,7 @@ import { WeatherBackground } from "@/components/WeatherBackground"
 import { WeatherCard } from "@/components/WeatherCard"
 import { ForecastCard } from "@/components/ForecastCard"
 import { VoiceButton } from "@/components/VoiceButton"
+import { CityAutocomplete } from "@/components/CityAutocomplete"
 
 interface WeatherData {
   city: string
@@ -169,36 +170,33 @@ export default function Home() {
         </motion.header>
 
         <motion.div
-          initial={{ y: -50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
-          className="px-6 md:px-8 max-w-2xl mx-auto"
-        >
-          <form onSubmit={handleSearch} className="relative group">
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search for a city..."
-                className="w-full px-6 py-4 pl-14 bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 transition-all duration-300 text-lg"
-              />
-              <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50" />
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                type="submit"
-                disabled={loading}
-                className="absolute right-3 top-1/2 -translate-y-1/2 px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl text-white font-semibold hover:shadow-lg hover:shadow-cyan-500/50 transition-all disabled:opacity-50"
-              >
-                {loading ? "..." : "Search"}
-              </motion.button>
-            </motion.div>
-          </form>
-        </motion.div>
+  initial={{ y: -50, opacity: 0 }}
+  animate={{ y: 0, opacity: 1 }}
+  transition={{ delay: 0.3, duration: 0.6 }}
+  className="px-6 md:px-8 max-w-2xl mx-auto"
+>
+  <form onSubmit={handleSearch} className="relative group">
+    <motion.div
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+    >
+      <CityAutocomplete
+        value={searchQuery}
+        onChange={setSearchQuery}
+        onCitySelect={fetchWeather}
+      />
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        type="submit"
+        disabled={loading}
+        className="absolute right-3 top-1/2 -translate-y-1/2 px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl text-white font-semibold hover:shadow-lg hover:shadow-cyan-500/50 transition-all disabled:opacity-50 z-10"
+      >
+        {loading ? "..." : "Search"}
+      </motion.button>
+    </motion.div>
+  </form>
+</motion.div>
 
         <AnimatePresence mode="wait">
           {weatherData ? (

@@ -25,18 +25,20 @@ export function RainAnimation({ intensity = "medium" }: RainAnimationProps) {
       length: number
       speed: number
       opacity: number
+      thickness: number
     }> = []
 
-    const dropCount = intensity === "light" ? 100 : intensity === "medium" ? 200 : 400
+    const dropCount = intensity === "light" ? 150 : intensity === "medium" ? 300 : 500
+    const windAngle = 5 // Slight angle for realism
 
-    // Initialize rain drops
     for (let i = 0; i < dropCount; i++) {
       drops.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        length: Math.random() * 20 + 10,
-        speed: Math.random() * 5 + 5,
-        opacity: Math.random() * 0.5 + 0.3,
+        x: Math.random() * (canvas.width + 200) - 100,
+        y: Math.random() * canvas.height - canvas.height,
+        length: Math.random() * 15 + 15,
+        speed: Math.random() * 3 + 8,
+        opacity: Math.random() * 0.3 + 0.4,
+        thickness: Math.random() * 1 + 0.5,
       })
     }
 
@@ -46,19 +48,29 @@ export function RainAnimation({ intensity = "medium" }: RainAnimationProps) {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
       drops.forEach((drop) => {
+        // Draw rain drop with gradient for realism
+        const gradient = ctx.createLinearGradient(
+          drop.x, drop.y,
+          drop.x + windAngle, drop.y + drop.length
+        )
+        gradient.addColorStop(0, `rgba(174, 194, 224, 0)`)
+        gradient.addColorStop(0.5, `rgba(174, 194, 224, ${drop.opacity})`)
+        gradient.addColorStop(1, `rgba(174, 194, 224, 0)`)
+
         ctx.beginPath()
-        ctx.strokeStyle = `rgba(174, 194, 224, ${drop.opacity})`
-        ctx.lineWidth = 1
+        ctx.strokeStyle = gradient
+        ctx.lineWidth = drop.thickness
+        ctx.lineCap = 'round'
         ctx.moveTo(drop.x, drop.y)
-        ctx.lineTo(drop.x, drop.y + drop.length)
+        ctx.lineTo(drop.x + windAngle, drop.y + drop.length)
         ctx.stroke()
 
         drop.y += drop.speed
-        drop.x += 0.5 // Slight angle
+        drop.x += windAngle * 0.3
 
-        if (drop.y > canvas.height) {
+        if (drop.y > canvas.height + 10) {
           drop.y = -drop.length
-          drop.x = Math.random() * canvas.width
+          drop.x = Math.random() * (canvas.width + 200) - 100
         }
       })
 
