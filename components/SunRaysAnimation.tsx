@@ -4,54 +4,67 @@ import { motion } from "framer-motion"
 import { useMemo } from "react"
 
 export function SunRaysAnimation() {
-  // Generate particle positions once
   const particles = useMemo(() => 
-    Array.from({ length: 20 }).map((_, i) => ({
+    Array.from({ length: 30 }).map((_, i) => ({
       id: i,
-      initialX: (i * 77) % window.innerWidth,
-      initialY: (i * 53) % window.innerHeight,
-      targetX: ((i * 89) % window.innerWidth),
-      targetY: ((i * 61) % window.innerHeight),
-      duration: 5 + (i * 7) % 10,
+      size: 2 + Math.random() * 3,
+      duration: 8 + Math.random() * 12,
+      delay: Math.random() * 5,
+      startX: Math.random() * 100,
+      startY: Math.random() * 100,
     }))
   , [])
 
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-      {/* Sun Circle */}
+      {/* Sun Orb */}
       <motion.div
         animate={{
-          scale: [1, 1.1, 1],
-          opacity: [0.8, 1, 0.8],
+          scale: [1, 1.15, 1],
+          opacity: [0.6, 0.8, 0.6],
         }}
         transition={{
-          duration: 4,
+          duration: 5,
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="absolute top-20 right-20 w-40 h-40 rounded-full bg-gradient-to-br from-yellow-300 to-orange-400 blur-3xl"
-      />
+        className="absolute top-16 right-16 md:top-24 md:right-24"
+      >
+        <div className="relative w-32 h-32 md:w-48 md:h-48">
+          {/* Core */}
+          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-yellow-200 to-orange-300 blur-2xl opacity-80" />
+          <div className="absolute inset-2 rounded-full bg-gradient-to-br from-yellow-100 to-orange-200 blur-xl" />
+          <div className="absolute inset-4 rounded-full bg-white blur-lg" />
+        </div>
+      </motion.div>
 
-      {/* Sun Rays */}
-      {Array.from({ length: 12 }).map((_, i) => (
+      {/* God Rays */}
+      {Array.from({ length: 16 }).map((_, i) => (
         <motion.div
-          key={i}
-          initial={{ opacity: 0.3 }}
+          key={`ray-${i}`}
+          initial={{ opacity: 0.2 }}
           animate={{
-            opacity: [0.3, 0.6, 0.3],
-            scale: [1, 1.2, 1],
+            opacity: [0.2, 0.5, 0.2],
+            scale: [1, 1.3, 1],
           }}
           transition={{
-            duration: 3,
+            duration: 4,
             repeat: Infinity,
-            delay: i * 0.2,
+            delay: i * 0.25,
             ease: "easeInOut",
           }}
-          className="absolute top-20 right-20 w-1 h-32 bg-gradient-to-b from-yellow-200/50 to-transparent origin-bottom"
+          className="absolute top-16 right-16 md:top-24 md:right-24 origin-center"
           style={{
-            transform: `rotate(${i * 30}deg) translateY(-80px)`,
+            transform: `rotate(${i * 22.5}deg)`,
           }}
-        />
+        >
+          <div 
+            className="w-2 h-48 md:h-72 bg-gradient-to-b from-yellow-200/40 via-yellow-300/20 to-transparent"
+            style={{
+              clipPath: "polygon(40% 0%, 60% 0%, 55% 100%, 45% 100%)",
+            }}
+          />
+        </motion.div>
       ))}
 
       {/* Floating Light Particles */}
@@ -59,25 +72,32 @@ export function SunRaysAnimation() {
         <motion.div
           key={particle.id}
           initial={{
-            x: particle.initialX,
-            y: particle.initialY,
+            x: `${particle.startX}vw`,
+            y: `${particle.startY}vh`,
+            opacity: 0,
           }}
           animate={{
-            y: [particle.initialY, particle.targetY],
-            x: [particle.initialX, particle.targetX],
-            opacity: [0, 1, 0],
+            x: [`${particle.startX}vw`, `${(particle.startX + 20) % 100}vw`],
+            y: [`${particle.startY}vh`, `${(particle.startY - 30 + 100) % 100}vh`],
+            opacity: [0, 0.8, 0],
           }}
           transition={{
             duration: particle.duration,
             repeat: Infinity,
             ease: "easeInOut",
+            delay: particle.delay,
           }}
-          className="absolute w-2 h-2 rounded-full bg-yellow-300"
+          className="absolute rounded-full bg-yellow-200"
           style={{
-            boxShadow: "0 0 10px rgba(253, 224, 71, 0.8)",
+            width: particle.size,
+            height: particle.size,
+            boxShadow: `0 0 ${particle.size * 3}px rgba(253, 224, 71, 0.6)`,
           }}
         />
       ))}
+
+      {/* Ambient Light Glow */}
+      <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-radial from-yellow-200/20 via-orange-200/10 to-transparent blur-3xl" />
     </div>
   )
 }
